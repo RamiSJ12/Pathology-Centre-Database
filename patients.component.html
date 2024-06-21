@@ -1,0 +1,11 @@
+<!-- patients.component.html -->
+
+<div *ngIf="patients">
+  <h2>Patients</h2>
+  <ul>
+    <li *ngFor="let patient of patients">
+      {{ patient.FirstName }} {{ patient.LastName }}
+      <!-- Display other patient details as needed -->
+    </li>
+  </ul>
+</div>
