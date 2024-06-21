@@ -1,0 +1,8 @@
+
+### Step 4: Create `.gitignore`
+
+Create a `.gitignore` file with the following content:
+```gitignore
+# Ignore system files
+.DS_Store
+Thumbs.db
