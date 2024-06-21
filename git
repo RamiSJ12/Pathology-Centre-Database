@@ -1,0 +1,149 @@
+#!/bin/bash
+
+# Variables
+REPO_NAME="pathology-center-database"
+GITHUB_USER="your-username"
+GITHUB_REPO="https://github.com/$GITHUB_USER/$REPO_NAME.git"
+
+# Create a new directory for the repository
+mkdir $REPO_NAME
+cd $REPO_NAME
+
+# Initialize Git repository
+git init
+
+# Create README.md
+cat <<EOL > README.md
+# Pathology Center Database
+
+This repository contains SQL scripts to create and manage a database for a pathology center.
+
+## Database Schema
+
+### Patients Table
+\`\`\`sql
+CREATE TABLE Patients (
+    PatientID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    DOB DATE,
+    Gender VARCHAR(10),
+    Address VARCHAR(255),
+    Phone VARCHAR(15),
+    Email VARCHAR(50),
+    MedicalHistory TEXT
+);
+\`\`\`
+
+...
+
+## Usage
+
+1. Clone the repository.
+2. Run the SQL scripts in the following order to create the database schema:
+   - \`patients.sql\`
+   - \`doctors.sql\`
+   - \`tests.sql\`
+   - \`appointments.sql\`
+   - \`test_orders.sql\`
+   - \`test_results.sql\`
+
+## License
+
+This project is licensed under the MIT License.
+EOL
+
+# Create .gitignore
+cat <<EOL > .gitignore
+# Ignore system files
+.DS_Store
+Thumbs.db
+EOL
+
+# Create patients.sql
+cat <<EOL > patients.sql
+CREATE TABLE Patients (
+    PatientID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    DOB DATE,
+    Gender VARCHAR(10),
+    Address VARCHAR(255),
+    Phone VARCHAR(15),
+    Email VARCHAR(50),
+    MedicalHistory TEXT
+);
+EOL
+
+# Create doctors.sql
+cat <<EOL > doctors.sql
+CREATE TABLE Doctors (
+    DoctorID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Specialization VARCHAR(50),
+    Phone VARCHAR(15),
+    Email VARCHAR(50)
+);
+EOL
+
+# Create tests.sql
+cat <<EOL > tests.sql
+CREATE TABLE Tests (
+    TestID INT PRIMARY KEY AUTO_INCREMENT,
+    TestName VARCHAR(100),
+    Description TEXT,
+    Cost DECIMAL(10, 2)
+);
+EOL
+
+# Create appointments.sql
+cat <<EOL > appointments.sql
+CREATE TABLE Appointments (
+    AppointmentID INT PRIMARY KEY AUTO_INCREMENT,
+    PatientID INT,
+    DoctorID INT,
+    AppointmentDate DATETIME,
+    Purpose TEXT,
+    FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
+);
+EOL
+
+# Create test_orders.sql
+cat <<EOL > test_orders.sql
+CREATE TABLE TestOrders (
+    OrderID INT PRIMARY KEY AUTO_INCREMENT,
+    PatientID INT,
+    DoctorID INT,
+    TestID INT,
+    OrderDate DATETIME,
+    Status VARCHAR(20),
+    FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID),
+    FOREIGN KEY (TestID) REFERENCES Tests(TestID)
+);
+EOL
+
+# Create test_results.sql
+cat <<EOL > test_results.sql
+CREATE TABLE TestResults (
+    ResultID INT PRIMARY KEY AUTO_INCREMENT,
+    OrderID INT,
+    TechnicianID INT,
+    ResultDate DATETIME,
+    Result TEXT,
+    Comments TEXT,
+    FOREIGN KEY (OrderID) REFERENCES TestOrders(OrderID),
+    FOREIGN KEY (TechnicianID) REFERENCES LabTechnicians(TechnicianID)
+);
+EOL
+
+# Add and commit files
+git add .
+git commit -m "Initial commit - added README.md, .gitignore, and SQL scripts"
+
+# Add remote repository and push to GitHub
+git remote add origin $GITHUB_REPO
+git branch -M main
+git push -u origin main
